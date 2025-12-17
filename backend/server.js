@@ -1,17 +1,10 @@
+require("dotenv").config();
 const express = require("express");
-const http = require("http");
-const { Server } = require("socket.io");
-const connectDB = require("./config/db");
+const passport = require("./auth/passport");
+const authRoutes = require("./routes/auth");
 
-const app = express();
-const server = http.createServer(app);
-const io = new Server(server, {
-  cors: { origin: "*" }
-});
+app.use(express.json());
+app.use(require("cors")());
+app.use(passport.initialize());
 
-connectDB();
-require("./socket")(io);
-
-server.listen(5000, () =>
-  console.log("🚀 Backend running on http://localhost:5000")
-);
+app.use("/auth", authRoutes);
